@@ -1,0 +1,14 @@
+C:\Users\uk\MM1_queuing_model\bin\Debug\net10.0\MM1_queuing_model.exe
+C:\Users\uk\MM1_queuing_model\bin\Debug\net10.0\MM1_queuing_model.deps.json
+C:\Users\uk\MM1_queuing_model\bin\Debug\net10.0\MM1_queuing_model.runtimeconfig.json
+C:\Users\uk\MM1_queuing_model\bin\Debug\net10.0\MM1_queuing_model.dll
+C:\Users\uk\MM1_queuing_model\bin\Debug\net10.0\MM1_queuing_model.pdb
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.AssemblyInfoInputs.cache
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.AssemblyInfo.cs
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.csproj.CoreCompileInputs.cache
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.dll
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\refint\MM1_queuing_model.dll
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.pdb
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\MM1_queuing_model.genruntimeconfig.cache
+C:\Users\uk\MM1_queuing_model\obj\Debug\net10.0\ref\MM1_queuing_model.dll

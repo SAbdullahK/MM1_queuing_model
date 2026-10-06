@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M/M/1 Queuing Model Calculator</title>
+<style>
+  :root {
+    --bg: #f4f6f9; --card: #ffffff; --text: #1d2733; --muted: #6b7785;
+    --accent: #2f6fa8; --accent-dark: #25577f; --border: #dde3ea;
+    --ok: #2e7d4f; --err: #b3261e; --bar: #4682b4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12171d; --card: #1b222b; --text: #e6ebf0; --muted: #94a0ad;
+      --accent: #5b9bd5; --accent-dark: #7ab0e0; --border: #2c3642;
+      --ok: #5fbf85; --err: #f2867f; --bar: #5b9bd5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  header { padding: 20px 24px 4px; }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+  main { display: grid; grid-template-columns: 300px 1fr; gap: 16px; padding: 16px 24px 32px; align-items: start; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .card h2 { margin: 0 0 12px; font-size: 1rem; }
+  label { display: block; font-size: .85rem; color: var(--muted); margin: 12px 0 4px; }
+  input[type=text], input[type=number] {
+    width: 100%; padding: 8px 10px; font-size: .95rem; color: var(--text);
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+  .radios { display: flex; flex-direction: column; gap: 6px; }
+  .radios label { display: flex; gap: 8px; align-items: center; margin: 0; color: var(--text); font-size: .92rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  button { cursor: pointer; font-size: .95rem; border-radius: 6px; padding: 10px 14px; border: 1px solid var(--accent); }
+  .primary { background: var(--accent); color: #fff; width: 100%; margin-top: 18px; }
+  .primary:hover { background: var(--accent-dark); }
+  .secondary { background: transparent; color: var(--accent); width: 100%; margin-top: 8px; }
+  #status { margin-top: 14px; font-size: .88rem; min-height: 1.3em; }
+  #status.err { color: var(--err); } #status.ok { color: var(--ok); }
+  .results { display: grid; gap: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th { background: var(--accent); color: #fff; text-align: left; padding: 8px 10px; font-weight: 600; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  td.num { font-variant-numeric: tabular-nums; font-weight: 600; }
+  td.sym { color: var(--muted); }
+  .scroll { overflow-x: auto; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { fill: var(--muted); font-size: 11px; font-family: inherit; }
+  .empty { color: var(--muted); font-size: .9rem; padding: 8px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>M/M/1 Queuing Model Calculator</h1>
+  <p>Steady-state analytical results, computed by the C# <code>MM1QueueModel</code> class.</p>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Inputs</h2>
+    <div class="radios">
+      <label><input type="radio" name="mode" value="rates" checked> Rates (λ and μ)</label>
+      <label><input type="radio" name="mode" value="times"> Mean times</label>
+    </div>
+
+    <label id="l1" for="a"></label>
+    <input id="a" type="text" inputmode="decimal" value="4">
+    <label id="l2" for="b"></label>
+    <input id="b" type="text" inputmode="decimal" value="5">
+
+    <div class="row">
+      <div><label for="unit">Time unit</label><input id="unit" type="text" value="min"></div>
+      <div><label for="maxN">Show P(n) to n =</label><input id="maxN" type="number" min="1" max="50" value="10"></div>
+    </div>
+
+    <button class="primary" id="calc">Calculate</button>
+    <button class="secondary" id="reset">Reset</button>
+    <div id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <div class="results">
+    <section class="card">
+      <h2>Performance measures</h2>
+      <div class="scroll"><table id="measures">
+        <thead><tr><th>Measure</th><th>Symbol</th><th>Value</th><th>Meaning</th></tr></thead>
+        <tbody><tr><td colspan="4" class="empty">Enter values and press Calculate.</td></tr></tbody>
+      </table></div>
+    </section>
+
+    <section class="card">
+      <h2>Probability distribution P(n)</h2>
+      <div id="chart"><div class="empty">No data yet.</div></div>
+    </section>
+
+    <section class="card">
+      <h2>P(n) table</h2>
+      <div class="scroll"><table id="pnTable">
+        <thead><tr><th>n</th><th>P(n)</th><th>P(N ≥ n)</th></tr></thead>
+        <tbody><tr><td colspan="3" class="empty">No data yet.</td></tr></tbody>
+      </table></div>
+    </section>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const f4 = v => Number(v).toFixed(4);
+
+function mode() { return document.querySelector('input[name=mode]:checked').value; }
+
+function updateLabels() {
+  if (mode() === 'rates') {
+    $('l1').textContent = 'Arrival rate λ (per unit time)';
+    $('l2').textContent = 'Service rate μ (per unit time)';
+  } else {
+    $('l1').textContent = 'Mean interarrival time';
+    $('l2').textContent = 'Mean service time';
+  }
+}
+
+function setStatus(msg, cls) { const s = $('status'); s.textContent = msg; s.className = cls || ''; }
+
+function parseNum(t) { return Number(String(t).trim().replace(',', '.')); }
+
+function clearResults() {
+  $('measures').querySelector('tbody').innerHTML = '<tr><td colspan="4" class="empty">Enter values and press Calculate.</td></tr>';
+  $('pnTable').querySelector('tbody').innerHTML = '<tr><td colspan="3" class="empty">No data yet.</td></tr>';
+  $('chart').innerHTML = '<div class="empty">No data yet.</div>';
+}
+
+function renderMeasures(d, unit) {
+  const u = unit ? ' ' + unit : '';
+  const rows = [
+    ['Arrival rate', 'λ', f4(d.lambda), 'Customers arriving per unit time'],
+    ['Service rate', 'μ', f4(d.mu), 'Customers served per unit time'],
+    ['Utilization', 'ρ', f4(d.rho), 'Fraction of time the server is busy (λ/μ)'],
+    ['Idle probability', 'P0', f4(d.p0), 'Probability the system is empty'],
+    ['Avg. # in system', 'L', f4(d.l), 'Expected customers in the system'],
+    ['Avg. # in queue', 'Lq', f4(d.lq), 'Expected customers waiting'],
+    ['Avg. # in service', 'Ls', f4(d.ls), 'Expected customers being served'],
+    ['Avg. time in system', 'W', f4(d.w) + u, 'Waiting + service time'],
+    ['Avg. time in queue', 'Wq', f4(d.wq) + u, 'Time spent waiting only'],
+    ['P(customer waits)', 'P(wait>0)', f4(d.probWait), 'Chance an arrival finds the server busy'],
+  ];
+  $('measures').querySelector('tbody').innerHTML = rows.map(r =>
+    `<tr><td>${r[0]}</td><td class="sym">${r[1]}</td><td class="num">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+}
+
+function renderPnTable(pn) {
+  $('pnTable').querySelector('tbody').innerHTML = pn.map(r =>
+    `<tr><td>${r.n}</td><td class="num">${f4(r.p)}</td><td class="num">${f4(r.atLeast)}</td></tr>`).join('');
+}
+
+function renderChart(pn) {
+  const W = 640, H = 280, L = 48, R = 12, T = 14, B = 38;
+  const pw = W - L - R, ph = H - T - B;
+  const max = Math.max(...pn.map(r => r.p)) * 1.1 || 1;
+  const slot = pw / pn.length, bw = Math.max(4, slot * 0.6);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of P(n)">`;
+  for (let i = 0; i <= 4; i++) {
+    const y = T + ph - ph * i / 4;
+    s += `<line x1="${L}" y1="${y}" x2="${W - R}" y2="${y}" stroke="var(--border)"/>`;
+    s += `<text x="${L - 6}" y="${y + 4}" text-anchor="end">${(max * i / 4).toFixed(2)}</text>`;
+  }
+  pn.forEach((r, i) => {
+    const h = r.p / max * ph, x = L + i * slot + (slot - bw) / 2, y = T + ph - h;
+    s += `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="2" fill="var(--bar)"><title>P(${r.n}) = ${f4(r.p)}</title></rect>`;
+    s += `<text x="${x + bw / 2}" y="${T + ph + 15}" text-anchor="middle">${r.n}</text>`;
+    if (slot > 44) s += `<text x="${x + bw / 2}" y="${y - 4}" text-anchor="middle">${r.p.toFixed(3)}</text>`;
+  });
+  s += `<text x="${L + pw / 2}" y="${H - 6}" text-anchor="middle">n (customers in system)</text></svg>`;
+  $('chart').innerHTML = s;
+}
+
+async function calculate() {
+  const a = parseNum($('a').value), b = parseNum($('b').value);
+  const maxN = parseInt($('maxN').value, 10) || 10;
+  if (!isFinite(a) || !isFinite(b) || $('a').value.trim() === '' || $('b').value.trim() === '') {
+    setStatus('Please enter valid numbers in both fields.', 'err'); return;
+  }
+  try {
+    const res = await fetch('/api/mm1', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: mode(), a, b, maxN })
+    });
+    const data = await res.json();
+    if (!res.ok) { clearResults(); setStatus(data.error || 'Request failed.', 'err'); return; }
+    renderMeasures(data, $('unit').value.trim());
+    renderChart(data.pn);
+    renderPnTable(data.pn);
+    setStatus('System is stable (ρ < 1).', 'ok');
+  } catch (e) {
+    setStatus('Could not reach the server. Is the app running?', 'err');
+  }
+}
+
+function resetAll() {
+  document.querySelector('input[name=mode][value=rates]').checked = true;
+  $('a').value = '4'; $('b').value = '5'; $('unit').value = 'min'; $('maxN').value = '10';
+  updateLabels(); clearResults(); setStatus('');
+}
+
+document.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener('change', updateLabels));
+$('calc').addEventListener('click', calculate);
+$('reset').addEventListener('click', resetAll);
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') calculate(); });
+updateLabels();
+</script>
+</body>
+</html>

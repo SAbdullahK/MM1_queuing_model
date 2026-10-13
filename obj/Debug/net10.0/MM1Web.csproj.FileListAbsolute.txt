@@ -16,7 +16,6 @@ C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\scopedcss\bundle\MM1Web.styles.css
-C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\compressed\fezfd7hg9h-{0}-0sj7zsp6mk-0sj7zsp6mk.gz
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\staticwebassets.build.json
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\staticwebassets.build.json.cache
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\staticwebassets.development.json
@@ -27,3 +26,4 @@ C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\refint\MM1Web.dll
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\MM1Web.pdb
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\MM1Web.genruntimeconfig.cache
 C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\ref\MM1Web.dll
+C:\Abdullah\MM1_queuing_model\obj\Debug\net10.0\compressed\fezfd7hg9h-{0}-xr2w9n0lul-xr2w9n0lul.gz

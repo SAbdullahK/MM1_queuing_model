@@ -1,0 +1,9 @@
+- Know the structure well enough to explain it. The browser page sends your inputs to /api/queue in Program.cs,
+which calls MMcQueueModel. The formulas live only in MMcQueueModel.cs, and the unit conversion lives only in
+Program.cs.
+
+
+- Plan how you’ll demo it. Anyone running the project needs the .NET 10 SDK, the same as you now. To send it 
+to someone, zip the folder without bin and obj. If your teacher’s computer has no .NET installed, I can make a
+version that runs as a single HTML file with the same formulas written in JavaScript, with no installation 
+needed.
